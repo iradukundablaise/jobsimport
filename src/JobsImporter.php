@@ -1,15 +1,12 @@
 <?php
-
 class JobsImporter
 {
     private $db;
+    private $parsers;
 
-    private $file;
-
-    public function __construct($host, $username, $password, $databaseName, $file)
+    public function __construct($host, $username, $password, $databaseName)
     {
-        $this->file = $file;
-        
+        $this->parsers = [];
         /* connect to DB */
         try {
             $this->db = new PDO('mysql:host=' . $host . ';dbname=' . $databaseName, $username, $password);
@@ -18,26 +15,32 @@ class JobsImporter
         }
     }
 
-    public function importJobs()
+    public function addParser($parser){
+        $this->parsers[] = $parser;
+    }
+
+    public function importJobs(): int
     {
         /* remove existing items */
         $this->db->exec('DELETE FROM job');
-
-        /* parse XML file */
-        $xml = simplexml_load_file($this->file);
-
         /* import each item */
         $count = 0;
-        foreach ($xml->item as $item) {
-            $this->db->exec('INSERT INTO job (reference, title, description, url, company_name, publication) VALUES ('
-                . '\'' . addslashes($item->ref) . '\', '
-                . '\'' . addslashes($item->title) . '\', '
-                . '\'' . addslashes($item->description) . '\', '
-                . '\'' . addslashes($item->url) . '\', '
-                . '\'' . addslashes($item->company) . '\', '
-                . '\'' . addslashes($item->pubDate) . '\')'
-            );
-            $count++;
+        foreach ($this->parsers as $parser){
+            $jobs = $parser->parse();
+            foreach ($jobs as $job) {
+                $res = $this->db->exec(
+                    'INSERT INTO job (reference, title, description, url, company_name, publication) VALUES ('
+                    . '\'' . addslashes($job->getRef()) . '\', '
+                    . '\'' . addslashes($job->getTitle()) . '\', '
+                    . '\'' . addslashes($job->getDescription()) . '\', '
+                    . '\'' . addslashes($job->getUrl()) . '\', '
+                    . '\'' . addslashes($job->getCompany()) . '\', '
+                    . '\'' . addslashes($job->getPubDate()) . '\')'
+                );
+                if($res){
+                    $count++;
+                }
+            }
         }
         return $count;
     }
