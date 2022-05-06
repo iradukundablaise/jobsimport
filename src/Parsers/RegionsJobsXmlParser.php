@@ -10,7 +10,7 @@ class RegionsJobsXmlParser extends XmlJobsParser
         $items = $this->getData();
         if($items){
             foreach($items as $job){
-                $jobs[] = new \Job(
+                $jobs[] = new \Models\Job(
                     (string) $job->ref,
                     (string) $job->title,
                     (string) $job->description,

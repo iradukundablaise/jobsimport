@@ -8,7 +8,7 @@
             $content = $this->getData();
             if($content && isset($content->offers)){
                 foreach($content->offers as $job){
-                    $jobs[] = new \Job(
+                    $jobs[] = new \Models\Job(
                         $job->reference,
                         $job->title,
                         $job->description,
