@@ -9,7 +9,11 @@ class JobService
     private $db;
 
     public function __construct($host, $username, $password, $databaseName){
-        $this->db = new PDO('mysql:host=' . $host . ';dbname=' . $databaseName, $username, $password);
+        try{
+            $this->db = new PDO('mysql:host=' . $host . ';dbname=' . $databaseName, $username, $password);
+        }catch(\Exception $e){
+            die($e->getMessage());
+        }
     }
 
     public function fetchAll(){
