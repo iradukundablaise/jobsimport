@@ -1,7 +1,6 @@
 <?php
     namespace Parsers;
 
-    interface Parserable {
+    interface Parsable {
         public function parse();
     }
-?>

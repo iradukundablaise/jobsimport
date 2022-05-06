@@ -1,6 +1,6 @@
 <?php
     namespace Parsers;
-    abstract  class JsonJobsParser extends Parser  implements Parserable{
+    abstract  class JsonJobsParser extends Parser  implements Parsable{
         public function __construct($filename){
             parent::__construct($filename);
         }

@@ -16,7 +16,9 @@ class JobsLister
 
     public function listJobs()
     {
-        $jobs = $this->db->query('SELECT id, reference, title, description, url, company_name, publication FROM job')->fetchAll(PDO::FETCH_ASSOC);
+        $jobs = $this->db
+                    ->query('SELECT id, reference, title, description, url, company_name, publication FROM job')
+                    ->fetchAll(PDO::FETCH_ASSOC);
         return $jobs;
     }
 }
